@@ -1,14 +1,15 @@
-import { z } from 'zod';
-import type { getWeather } from './ai/tools/get-weather';
-import type { createDocument } from './ai/tools/create-document';
-import type { updateDocument } from './ai/tools/update-document';
-import type { requestSuggestions } from './ai/tools/request-suggestions';
-import type { InferUITool, UIMessage } from 'ai';
+import { z } from "zod";
+import type { getWeather } from "./ai/tools/get-weather";
+import type { createDocument } from "./ai/tools/create-document";
+import type { updateDocument } from "./ai/tools/update-document";
+import type { requestSuggestions } from "./ai/tools/request-suggestions";
+import type { getStockPortfolio } from "./ai/tools/get-stock-portfolio";
+import type { InferUITool, UIMessage } from "ai";
 
-import type { ArtifactKind } from '@/components/artifact';
-import type { Suggestion } from './db/schema';
+import type { ArtifactKind } from "@/components/artifact";
+import type { Suggestion } from "./db/schema";
 
-export type DataPart = { type: 'append-message'; message: string };
+export type DataPart = { type: "append-message"; message: string };
 
 export const messageMetadataSchema = z.object({
   createdAt: z.string(),
@@ -22,12 +23,14 @@ type updateDocumentTool = InferUITool<ReturnType<typeof updateDocument>>;
 type requestSuggestionsTool = InferUITool<
   ReturnType<typeof requestSuggestions>
 >;
+type getStockPortfolioTool = InferUITool<ReturnType<typeof getStockPortfolio>>;
 
 export type ChatTools = {
   getWeather: weatherTool;
   createDocument: createDocumentTool;
   updateDocument: updateDocumentTool;
   requestSuggestions: requestSuggestionsTool;
+  getStockPortfolio: getStockPortfolioTool;
 };
 
 export type CustomUIDataTypes = {
