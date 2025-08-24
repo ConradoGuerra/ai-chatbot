@@ -23,9 +23,8 @@ describe("getStockPortfolio tool", () => {
     ];
 
     mockAxios.get.mockResolvedValue({ data: mockData });
-
-    const getStockPortfolioMethod = getStockPortfolio(mockAxios as any)
-    const result = await getStockPortfolioMethod.execute(
+    const tool = getStockPortfolio(mockAxios as any) as any;
+    const result = await tool.execute(
       {
         tickers: ["AAPL"],
       },
@@ -50,9 +49,8 @@ describe("getStockPortfolio tool", () => {
 
     mockAxios.get.mockRejectedValue(new Error("Error"));
 
-    const getStockPortfolioMethod = getStockPortfolio(mockAxios as any);
-
-    const result = await getStockPortfolioMethod.execute(
+    const tool = getStockPortfolio(mockAxios as any) as any;
+    const result = await tool.execute(
       {
         tickers: ["AAPL"],
       },
