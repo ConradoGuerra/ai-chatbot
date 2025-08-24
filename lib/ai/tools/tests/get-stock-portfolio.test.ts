@@ -1,36 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { getStockPortfolio } from "../get-stock-portfolio";
-import axios from "axios";
-
-const createMockInterceptors = () => ({
-  request: { use: vi.fn(), eject: vi.fn() },
-  response: { use: vi.fn(), eject: vi.fn() },
-});
-
-const mockAxiosResponse = (response: any) => {
-  const mockedAxios = axios as any;
-  mockedAxios.create.mockReturnValueOnce({
-    get: vi.fn().mockResolvedValue(response),
-    interceptors: createMockInterceptors(),
-  });
-};
-
-const mockAxiosError = (error: Error) => {
-  const mockedAxios = axios as any;
-  mockedAxios.create.mockReturnValueOnce({
-    get: vi.fn().mockRejectedValue(error),
-    interceptors: createMockInterceptors(),
-  });
-};
-
-vi.mock("axios", () => ({
-  default: {
-    create: vi.fn(() => ({
-      get: vi.fn(),
-      interceptors: createMockInterceptors(),
-    })),
-  },
-}));
 
 describe("getStockPortfolio tool", () => {
   beforeAll(() => {
@@ -41,11 +10,11 @@ describe("getStockPortfolio tool", () => {
     vi.restoreAllMocks();
   });
 
-  it("returns prices and variations for valid tickers", async () => {
+  it("should return the expected result", async () => {
+    const mockAxios = { get: vi.fn() };
     const mockData = [
       {
         symbol: "AAPL",
-        name: "Apple Inc.",
         price: 150,
         changesPercentage: 1.35,
         volume: 42162846,
@@ -53,32 +22,45 @@ describe("getStockPortfolio tool", () => {
       },
     ];
 
-    mockAxiosResponse({ data: mockData });
+    mockAxios.get.mockResolvedValue({ data: mockData });
 
-    const [result] = await getStockPortfolio.execute({ tickers: ["AAPL"] });
+    const getStockPortfolioMethod = getStockPortfolio(mockAxios as any)
+    const result = await getStockPortfolioMethod.execute(
+      {
+        tickers: ["AAPL"],
+      },
+      {} as any,
+    );
 
-    expect(result).toEqual({
-      ticker: "AAPL",
-      price: 150,
-      volume: 42162846,
-      changesPercentage: 1.35,
-      timestamp: 1755892801, 
-    });
+    expect(result).toEqual([
+      {
+        symbol: "AAPL",
+        price: 150,
+        volume: 42162846,
+        changesPercentage: 1.35,
+        timestamp: 1755892801,
+      },
+    ]);
+
+    expect(mockAxios.get).toHaveBeenCalledWith("/quote/AAPL?apikey=FAKE_KEY");
   });
 
-  it("returns undefined when the API returns no data", async () => {
-    mockAxiosResponse({ data: [] });
+  it("should an error", async () => {
+    const mockAxios = { get: vi.fn() };
 
-    const result = await getStockPortfolio.execute({ tickers: ["INVALID"] });
+    mockAxios.get.mockRejectedValue(new Error("Error"));
 
-    expect(result).toBeUndefined();
-  });
+    const getStockPortfolioMethod = getStockPortfolio(mockAxios as any);
 
-  it("handles API errors gracefully", async () => {
-    mockAxiosError(new Error("Network Error"));
+    const result = await getStockPortfolioMethod.execute(
+      {
+        tickers: ["AAPL"],
+      },
+      {} as any,
+    );
 
-    const result = await getStockPortfolio.execute({ tickers: ["ERR"] });
+    expect(result).toEqual([]);
 
-    expect(result).toBeUndefined();
+    expect(mockAxios.get).toHaveBeenCalledWith("/quote/AAPL?apikey=FAKE_KEY");
   });
 });

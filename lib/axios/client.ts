@@ -1,6 +1,9 @@
-import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
+import axios, { AxiosInstance, CreateAxiosDefaults } from "axios";
+import axiosRetry from "axios-retry";
 
-const createAxiosInstance = (config?: CreateAxiosDefaults): AxiosInstance => {
+export const createAxiosInstance = (
+  config?: CreateAxiosDefaults,
+): AxiosInstance => {
   const instance = axios.create({
     timeout: 1000,
     ...config,
@@ -9,4 +12,13 @@ const createAxiosInstance = (config?: CreateAxiosDefaults): AxiosInstance => {
   return instance;
 };
 
-export default createAxiosInstance;
+export const createAxiosRetryInstance = (
+  config?: CreateAxiosDefaults,
+): AxiosInstance => {
+  const instance = createAxiosInstance(config);
+
+  axiosRetry(instance, { retries: 2 });
+
+  return instance;
+};
+
