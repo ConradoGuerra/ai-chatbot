@@ -1,10 +1,8 @@
 import { tool } from "ai";
 import { z } from "zod";
+import type { IStockService } from "@/lib/domain/stock/interfaces";
 
-import { Stock } from "@/lib/domain/stock/types";
-import { AxiosInstance } from "axios";
-
-export const getStockPortfolio = (axiosRetryInstance: AxiosInstance) =>
+export const getStockPortfolio = (stockService: IStockService) =>
   tool({
     name: "getStockPortfolio",
     inputSchema: z.object({
@@ -15,34 +13,13 @@ export const getStockPortfolio = (axiosRetryInstance: AxiosInstance) =>
     description:
       "Fetches current prices and variations for a list of stock tickers using the Financial Modeling Prep API.",
     execute: async ({ tickers }) => {
-      const apiKey = process.env.FMP_API_KEY;
-
-      const results = [];
-
-      for await (const ticker of tickers) {
-        try {
-          const { data } = await axiosRetryInstance.get<Stock[]>(
-            `/quote/${ticker}?apikey=${apiKey}`,
-          );
-
-          if (data.length) {
-            results.push(
-              data.reduce(
-                (_, curr) => ({
-                  symbol: curr.symbol,
-                  price: curr.price,
-                  volume: curr.volume,
-                  changesPercentage: curr.changesPercentage,
-                  timestamp: curr.timestamp,
-                }),
-                {},
-              ),
-            );
-          }
-        } catch (err: any) {
-          console.error(`Error fetching ticker ${ticker}:`, err.message);
-        }
+      try {
+        return await stockService.getPortfolio(tickers);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error occurred";
+        console.error("Failed to get stock portfolio:", message);
+        return [];
       }
-      return results;
     },
   });

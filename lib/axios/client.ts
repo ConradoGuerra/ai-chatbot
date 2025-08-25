@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, CreateAxiosDefaults } from "axios";
+import axios, { type AxiosInstance, type CreateAxiosDefaults } from "axios";
 import axiosRetry from "axios-retry";
 
 export const createAxiosInstance = (

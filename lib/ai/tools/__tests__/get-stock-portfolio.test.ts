@@ -1,6 +1,6 @@
 import { getStockPortfolio } from '../get-stock-portfolio';
-import { IStockService } from '@/lib/domain/stock/interfaces';
-import { Stock } from '@/lib/domain/stock/types';
+import type { IStockService } from '@/lib/domain/stock/interfaces';
+import type { Stock } from '@/lib/domain/stock/types';
 
 describe('getStockPortfolio', () => {
   let mockStockService: jest.Mocked<IStockService>;

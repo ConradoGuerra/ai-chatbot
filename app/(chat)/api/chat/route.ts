@@ -38,7 +38,7 @@ import { ChatSDKError } from "@/lib/errors";
 import type { ChatMessage } from "@/lib/types";
 import type { ChatModel } from "@/lib/ai/models";
 import type { VisibilityType } from "@/components/visibility-selector";
-import { createAxiosRetryInstance } from "@/lib/axios/client";
+import { stockPortfolioFactory } from "@/lib/infrastructure/factories/stock-portfolio.factory";
 
 export const maxDuration = 60;
 
@@ -153,9 +153,11 @@ export async function POST(request: Request) {
 
     const stream = createUIMessageStream({
       execute: ({ writer: dataStream }) => {
-        const axiosRetryInstance = createAxiosRetryInstance({
+        const stockService = stockPortfolioFactory.createStockService({
           baseURL: "https://financialmodelingprep.com/api/v3",
+          apiKey: process.env.FMP_API_KEY || "local_key",
         });
+
         const result = streamText({
           model: myProvider.languageModel(selectedChatModel),
           system: systemPrompt({ selectedChatModel, requestHints }),
@@ -174,7 +176,7 @@ export async function POST(request: Request) {
           experimental_transform: smoothStream({ chunking: "word" }),
           tools: {
             getWeather,
-            getStockPortfolio: getStockPortfolio(axiosRetryInstance),
+            getStockPortfolio: getStockPortfolio(stockService),
             createDocument: createDocument({ session, dataStream }),
             updateDocument: updateDocument({ session, dataStream }),
             requestSuggestions: requestSuggestions({
