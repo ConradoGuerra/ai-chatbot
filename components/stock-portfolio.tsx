@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Stock } from "@/lib/domain/stock/types";
+import type { Stock } from "@/lib/domain/stock/types";
 
 export function StockPortfolio({ portfolio }: { portfolio?: Stock[] }) {
   if (!portfolio) {
