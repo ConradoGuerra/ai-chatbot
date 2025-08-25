@@ -1,64 +1,68 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
-import { getStockPortfolio } from "../get-stock-portfolio";
+import { getStockPortfolio } from '../get-stock-portfolio';
+import { IStockService } from '@/lib/domain/stock/interfaces';
+import { Stock } from '@/lib/domain/stock/types';
 
-describe("getStockPortfolio tool", () => {
-  beforeAll(() => {
-    process.env.FMP_API_KEY = "FAKE_KEY";
+describe('getStockPortfolio', () => {
+  let mockStockService: jest.Mocked<IStockService>;
+
+  beforeEach(() => {
+    process.env.FMP_API_KEY = 'FAKE_KEY';
+    mockStockService = {
+      getPortfolio: jest.fn(),
+    };
   });
 
-  afterAll(() => {
-    vi.restoreAllMocks();
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
-  it("should return the expected result", async () => {
-    const mockAxios = { get: vi.fn() };
-    const mockData = [
+  it('should return the expected result', async () => {
+    const mockData: Stock[] = [
       {
-        symbol: "AAPL",
+        symbol: 'AAPL',
+        name: 'Apple Inc.',
         price: 150,
         changesPercentage: 1.35,
         volume: 42162846,
-        timestamp: 1755892801,
+        timestamp: '1755892801',
       },
     ];
 
-    mockAxios.get.mockResolvedValue({ data: mockData });
-    const tool = getStockPortfolio(mockAxios as any) as any;
+    mockStockService.getPortfolio.mockResolvedValue(mockData);
+    const tool = getStockPortfolio(mockStockService);
+
+    if (!tool.execute) {
+      throw new Error('Tool execute method not found');
+    }
+
     const result = await tool.execute(
       {
-        tickers: ["AAPL"],
+        tickers: ['AAPL'],
       },
       {} as any,
     );
 
-    expect(result).toEqual([
-      {
-        symbol: "AAPL",
-        price: 150,
-        volume: 42162846,
-        changesPercentage: 1.35,
-        timestamp: 1755892801,
-      },
-    ]);
-
-    expect(mockAxios.get).toHaveBeenCalledWith("/quote/AAPL?apikey=FAKE_KEY");
+    expect(result).toEqual(mockData);
+    expect(mockStockService.getPortfolio).toHaveBeenCalledWith(['AAPL']);
   });
 
-  it("should an error", async () => {
-    const mockAxios = { get: vi.fn() };
+  it('should handle error', async () => {
+    mockStockService.getPortfolio.mockRejectedValue(new Error('Error'));
 
-    mockAxios.get.mockRejectedValue(new Error("Error"));
+    const tool = getStockPortfolio(mockStockService);
 
-    const tool = getStockPortfolio(mockAxios as any) as any;
+    if (!tool.execute) {
+      throw new Error('Tool execute method not found');
+    }
+
     const result = await tool.execute(
       {
-        tickers: ["AAPL"],
+        tickers: ['AAPL'],
       },
       {} as any,
     );
 
     expect(result).toEqual([]);
-
-    expect(mockAxios.get).toHaveBeenCalledWith("/quote/AAPL?apikey=FAKE_KEY");
+    expect(mockStockService.getPortfolio).toHaveBeenCalledWith(['AAPL']);
   });
 });
