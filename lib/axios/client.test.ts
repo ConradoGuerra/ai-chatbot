@@ -1,4 +1,4 @@
-import createAxiosInstance from './client';
+import { createAxiosInstance } from './client';
 
 describe('createAxiosInstance', () => {
   it('should create an instance with the correct baseURL and headers', () => {
