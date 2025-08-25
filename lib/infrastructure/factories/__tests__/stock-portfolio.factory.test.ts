@@ -10,10 +10,11 @@ describe('StockPortfolioFactory', () => {
   const mockCreateHttpClient = jest.fn();
   const mockHttpClient = { get: jest.fn() };
   let factory: StockPortfolioFactory;
+  const mockRepository = { saveMany: jest.fn() };
 
   beforeEach(() => {
     mockCreateHttpClient.mockReturnValue(mockHttpClient);
-    factory = new StockPortfolioFactory(mockCreateHttpClient);
+    factory = new StockPortfolioFactory(mockRepository, mockCreateHttpClient);
     jest.clearAllMocks();
   });
 
@@ -35,6 +36,7 @@ describe('StockPortfolioFactory', () => {
       );
       expect(StockPortfolioService).toHaveBeenCalledWith(
         expect.any(StockHttpClient),
+        mockRepository,
       );
       expect(service).toBeInstanceOf(StockPortfolioService);
     });

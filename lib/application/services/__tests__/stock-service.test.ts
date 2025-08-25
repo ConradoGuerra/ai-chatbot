@@ -5,10 +5,16 @@ describe('StockPortfolioService', () => {
   const mockStockClient = {
     getQuote: jest.fn(),
   };
+  const mockStockRepository = {
+    saveMany: jest.fn(),
+  };
   let stockService: StockPortfolioService;
 
   beforeEach(() => {
-    stockService = new StockPortfolioService(mockStockClient as any);
+    stockService = new StockPortfolioService(
+      mockStockClient as any,
+      mockStockRepository as any,
+    );
     jest.clearAllMocks();
   });
 
@@ -31,6 +37,18 @@ describe('StockPortfolioService', () => {
         timestamp: '1234567890',
       },
     ];
+
+    it('should call saveMany on the repository with stocks after fetching portfolio', async () => {
+      mockStockClient.getQuote
+        .mockResolvedValueOnce(mockStocks[0])
+        .mockResolvedValueOnce(mockStocks[1]);
+
+      const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
+
+      expect(result).toEqual(mockStocks);
+      expect(mockStockRepository.saveMany).toHaveBeenCalledWith(mockStocks);
+      expect(mockStockRepository.saveMany).toHaveBeenCalledTimes(1);
+    });
 
     it('should return portfolio data for valid tickers', async () => {
       mockStockClient.getQuote

@@ -2,8 +2,9 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { stockQuotesHistoric } from "@/lib/db/schema";
 import { Stock } from "@/lib/domain/stock/types";
+import { IStockRepository } from "@/lib/application/services/stock-service";
 
-export class NeonStockQuoteRepository {
+export class NeonStockQuoteRepository implements IStockRepository {
   private readonly db: ReturnType<typeof drizzle>;
 
   constructor(connectionString: string) {
@@ -14,15 +15,14 @@ export class NeonStockQuoteRepository {
   async saveMany(quotes: Stock[]): Promise<void> {
     if (quotes.length === 0) return;
 
-    quotes.map(async (quote) => {
-      const quoteEntity: typeof stockQuotesHistoric.$inferInsert = {
-        ticker: quote.symbol,
-        price: quote.price.toString(),
-        volume: quote.volume,
-        changes_percentage: quote.changesPercentage?.toString(),
-        quoted_at: new Date(quote.timestamp),
-      };
-      await this.db.insert(stockQuotesHistoric).values(quoteEntity);
-    });
+    const quoteEntities = quotes.map((quote) => ({
+      ticker: quote.symbol,
+      price: quote.price.toString(),
+      volume: quote.volume,
+      changes_percentage: quote.changesPercentage?.toString(),
+      quoted_at: new Date(quote.timestamp),
+    }));
+
+    await this.db.insert(stockQuotesHistoric).values(quoteEntities);
   }
 }
