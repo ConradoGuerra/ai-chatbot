@@ -1,4 +1,3 @@
-import { createAxiosRetryInstance } from "@/lib/axios/client";
 import { StockHttpClient } from "@/lib/infrastructure/http/stock-http-client";
 import type { IStockRepository } from "@/lib/application/services/stock-service";
 import { StockPortfolioService } from "@/lib/application/services/stock-service";
@@ -7,11 +6,12 @@ import type {
   StockClientConfig,
   IStockService,
 } from "@/lib/domain/stock/interfaces";
+import { createAxiosInstance } from "@/lib/axios/client";
 
 export class StockPortfolioFactory {
   constructor(
     private readonly stockRepository: IStockRepository,
-    private readonly createHttpClient = createAxiosRetryInstance,
+    private readonly createHttpClient = createAxiosInstance,
   ) {}
 
   createStockService(config: StockClientConfig): IStockService {

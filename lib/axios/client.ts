@@ -1,5 +1,4 @@
 import axios, { type AxiosInstance, type CreateAxiosDefaults } from "axios";
-import axiosRetry from "axios-retry";
 
 export const createAxiosInstance = (
   config?: CreateAxiosDefaults,
@@ -11,14 +10,3 @@ export const createAxiosInstance = (
 
   return instance;
 };
-
-export const createAxiosRetryInstance = (
-  config?: CreateAxiosDefaults,
-): AxiosInstance => {
-  const instance = createAxiosInstance(config);
-
-  axiosRetry(instance, { retries: 2 });
-
-  return instance;
-};
-

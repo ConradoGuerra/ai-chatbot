@@ -13,24 +13,47 @@ export class StockPortfolioService implements IStockService {
   ) {}
 
   async getPortfolio(tickers: string[]): Promise<Stock[]> {
-    const results: Stock[] = [];
-
-    for await (const ticker of tickers) {
-      try {
-        const quote = await this.stockClient.getQuote(ticker);
-        if (quote) {
-          results.push(quote);
-        }
-      } catch (error) {
-        console.error(`Error fetching portfolio for ticker ${ticker}:`, error);
-      }
+    if (!tickers.length) {
+      return [];
     }
 
-    await this.savePortfolio(results);
-    return results;
+    try {
+      const quotes = await this.fetchQuotesWithRetry(tickers);
+      if (quotes.length > 0) {
+        await this.savePortfolio(quotes);
+      }
+      return quotes;
+    } catch (error) {
+      console.error(
+        `Failed to fetch portfolio for tickers [${tickers.join(", ")}]:`,
+        error instanceof Error ? error.message : error,
+      );
+      return [];
+    }
+  }
+
+  private async fetchQuotesWithRetry(tickers: string[]): Promise<Stock[]> {
+    const initialQuotes = await this.stockClient.getQuotes(tickers);
+
+    if (initialQuotes.length === tickers.length) {
+      return initialQuotes;
+    }
+
+    const receivedTickers = new Set(initialQuotes.map((q) => q.symbol));
+    const missingTickers = tickers.filter(
+      (ticker) => !receivedTickers.has(ticker),
+    );
+
+    const retryQuotes = await this.stockClient.getQuotes(missingTickers);
+    return [...initialQuotes, ...retryQuotes];
   }
 
   private async savePortfolio(stocks: Stock[]): Promise<void> {
-    await this.stockRepository.saveMany(stocks);
+    try {
+      await this.stockRepository.saveMany(stocks);
+    } catch (error) {
+      console.error(`Failed to save portfolio for ${stocks.length} stocks`);
+      throw error;
+    }
   }
 }

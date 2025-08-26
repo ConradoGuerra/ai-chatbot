@@ -13,35 +13,54 @@ describe("StockClient", () => {
     jest.clearAllMocks();
   });
 
-  describe("getQuote", () => {
-    const mockStock: Stock = {
-      symbol: "AAPL",
-      name: "Apple Inc",
-      price: 150.0,
-      volume: 1000000,
-      changesPercentage: 1.5,
-      timestamp: "1234567890",
-    };
+  describe("getQuotes", () => {
+    const mockStocks: Stock[] = [
+      {
+        symbol: "AAPL",
+        name: "Apple Inc",
+        price: 150.0,
+        volume: 1000000,
+        changesPercentage: 1.5,
+        timestamp: 1234567890,
+      },
+      {
+        symbol: "GOOGL",
+        name: "Alphabet Inc",
+        price: 2800.0,
+        volume: 500000,
+        changesPercentage: 0.8,
+        timestamp: 1234567890,
+      },
+    ];
 
-    it("should return stock data when API call succeeds", async () => {
-      mockAxios.get.mockResolvedValueOnce({ data: [mockStock] });
+    it("should return multiple stock data when API call succeeds", async () => {
+      mockAxios.get.mockResolvedValueOnce({ data: mockStocks });
 
-      const result = await stockClient.getQuote("AAPL");
+      const result = await stockClient.getQuotes(["AAPL", "GOOGL"]);
 
-      expect(result).toEqual(mockStock);
+      expect(result).toEqual([
+        {
+          ...mockStocks[0],
+          timestamp: 1234567890 * 1000,
+        },
+        {
+          ...mockStocks[1],
+          timestamp: 1234567890 * 1000,
+        },
+      ]);
       expect(mockAxios.get).toHaveBeenCalledWith(
-        `/quote/AAPL?apikey=${apiKey}`,
+        `/quote/AAPL,GOOGL?apikey=${apiKey}`,
       );
     });
 
-    it("should return null when API returns empty array", async () => {
+    it("should return empty array when API returns empty array", async () => {
       mockAxios.get.mockResolvedValueOnce({ data: [] });
 
-      const result = await stockClient.getQuote("INVALID");
+      const result = await stockClient.getQuotes(["INVALID1", "INVALID2"]);
 
-      expect(result).toBeNull();
+      expect(result).toEqual([]);
       expect(mockAxios.get).toHaveBeenCalledWith(
-        `/quote/INVALID?apikey=${apiKey}`,
+        `/quote/INVALID1,INVALID2?apikey=${apiKey}`,
       );
     });
 
@@ -49,11 +68,11 @@ describe("StockClient", () => {
       const error = new Error("API Error");
       mockAxios.get.mockRejectedValueOnce(error);
 
-      await expect(stockClient.getQuote("AAPL")).rejects.toThrow(
-        "Failed to fetch quote for AAPL: API Error",
+      await expect(stockClient.getQuotes(["AAPL", "GOOGL"])).rejects.toThrow(
+        "Failed to fetch quotes for AAPL,GOOGL: API Error",
       );
       expect(mockAxios.get).toHaveBeenCalledWith(
-        `/quote/AAPL?apikey=${apiKey}`,
+        `/quote/AAPL,GOOGL?apikey=${apiKey}`,
       );
     });
   });
