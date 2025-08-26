@@ -4,5 +4,5 @@ export type Stock = {
   price: number;
   changesPercentage: number;
   volume: number;
-  timestamp: string;
+  timestamp: number;
 };

@@ -17,13 +17,15 @@ export class StockHttpClient {
         return null;
       }
 
+      const secondsToMs = data[0].timestamp * 1000;
+
       return {
         symbol: data[0].symbol,
         name: data[0].name,
         price: data[0].price,
         volume: data[0].volume,
         changesPercentage: data[0].changesPercentage,
-        timestamp: data[0].timestamp,
+        timestamp: secondsToMs,
       };
     } catch (error: unknown) {
       const message =
