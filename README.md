@@ -102,14 +102,22 @@ POSTGRES_URL=YOUR_NEON_CONFIG
 ### Installation Steps
 
 1. Start the required services using Docker Compose:
-
 ```bash
 docker compose up -d
 ```
 
+2. Then, install the packages:
 ```bash
 pnpm install
+```
+
+3. Create the tables in the database:
+```bash
 npx drizzle-kit push
+```
+
+4. Finally, launch the server:
+```bash
 pnpm dev
 ```
 
