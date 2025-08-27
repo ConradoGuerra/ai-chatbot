@@ -41,7 +41,7 @@ import type { VisibilityType } from "@/components/visibility-selector";
 import { StockPortfolioFactory } from "@/lib/infrastructure/factories/stock-portfolio.factory";
 import { RedisClient } from "@/lib/infrastructure/cache/redis.client";
 import { DrizzleStockQuoteRepository } from "@/lib/infrastructure/repositories/drizzle-stock-quote.repository";
-import { StockCacheRepository } from "@/lib/infrastructure/repositories/stock-cache.repository";
+import { StockPortfolioCacheRepository } from "@/lib/infrastructure/repositories/stock-cache.repository";
 import { createAxiosInstance } from "@/lib/axios/client";
 
 export const maxDuration = 60;
@@ -160,12 +160,12 @@ export async function POST(request: Request) {
         const redisClient = new RedisClient();
         const stockPortfolioFactory = new StockPortfolioFactory(
           new DrizzleStockQuoteRepository(),
-          new StockCacheRepository(redisClient),
+          new StockPortfolioCacheRepository(redisClient),
           createAxiosInstance({
             baseURL: "https://financialmodelingprep.com/api/v3",
           }),
         );
-        const stockService = stockPortfolioFactory.createStockService(
+        const stockPortfolioService = stockPortfolioFactory.createService(
           process.env.FMP_API_KEY || "local_key",
         );
 
@@ -187,7 +187,7 @@ export async function POST(request: Request) {
           experimental_transform: smoothStream({ chunking: "word" }),
           tools: {
             getWeather,
-            getStockPortfolio: getStockPortfolio(stockService),
+            getStockPortfolio: getStockPortfolio(stockPortfolioService),
             createDocument: createDocument({ session, dataStream }),
             updateDocument: updateDocument({ session, dataStream }),
             requestSuggestions: requestSuggestions({

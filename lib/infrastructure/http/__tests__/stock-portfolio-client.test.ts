@@ -1,15 +1,15 @@
 import { Stock } from "@/lib/domain/stock/types";
-import { StockHttpClient } from "../stock-http-client";
+import { StockPortfolioHttpClient } from "../stock-portfolio-http-client";
 
 describe("StockClient", () => {
   const mockAxios = {
     get: jest.fn(),
   };
   const apiKey = "test-api-key";
-  let stockClient: StockHttpClient;
+  let stockClient: StockPortfolioHttpClient;
 
   beforeEach(() => {
-    stockClient = new StockHttpClient(mockAxios as any, apiKey);
+    stockClient = new StockPortfolioHttpClient(mockAxios as any, apiKey);
     jest.clearAllMocks();
   });
 

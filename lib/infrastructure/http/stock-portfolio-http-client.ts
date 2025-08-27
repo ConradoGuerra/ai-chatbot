@@ -1,7 +1,8 @@
 import type { AxiosInstance } from "axios";
 import type { Stock } from "@/lib/domain/stock/types";
+import { IStockPortfolioClient } from "@/lib/domain/stock/interfaces";
 
-export class StockHttpClient {
+export class StockPortfolioHttpClient implements IStockPortfolioClient {
   constructor(
     private readonly axiosInstance: AxiosInstance,
     private readonly apiKey: string,

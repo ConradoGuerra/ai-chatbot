@@ -1,9 +1,9 @@
 import { getStockPortfolio } from '../get-stock-portfolio';
-import type { IStockService } from '@/lib/domain/stock/interfaces';
+import type { IStockPortfolioService } from '@/lib/domain/stock/interfaces';
 import type { Stock } from '@/lib/domain/stock/types';
 
 describe('getStockPortfolio', () => {
-  let mockStockService: jest.Mocked<IStockService>;
+  let mockStockService: jest.Mocked<IStockPortfolioService>;
 
   beforeEach(() => {
     process.env.FMP_API_KEY = 'FAKE_KEY';
@@ -24,7 +24,7 @@ describe('getStockPortfolio', () => {
         price: 150,
         changesPercentage: 1.35,
         volume: 42162846,
-        timestamp: '1755892801',
+        timestamp: 1755892801,
       },
     ];
 

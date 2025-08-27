@@ -1,8 +1,8 @@
 import { tool } from "ai";
 import { z } from "zod";
-import type { IStockService } from "@/lib/domain/stock/interfaces";
+import type { IStockPortfolioService } from "@/lib/domain/stock/interfaces";
 
-export const getStockPortfolio = (stockService: IStockService) =>
+export const getStockPortfolio = (stockService: IStockPortfolioService) =>
   tool({
     name: "getStockPortfolio",
     inputSchema: z.object({

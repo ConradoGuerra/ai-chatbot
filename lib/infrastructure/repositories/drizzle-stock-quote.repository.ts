@@ -8,12 +8,12 @@ import {
 } from "drizzle-orm/postgres-js";
 import { stockQuotesHistoric } from "@/lib/db/schema";
 import { Stock } from "@/lib/domain/stock/types";
-import { IStockRepository } from "@/lib/domain/stock/interfaces";
+import { IStockPortfolioRepository } from "@/lib/domain/stock/interfaces";
 import { databaseConfig } from "@/config/database";
 import { neon } from "@neondatabase/serverless";
 import postgres from "postgres";
 
-export class DrizzleStockQuoteRepository implements IStockRepository {
+export class DrizzleStockQuoteRepository implements IStockPortfolioRepository {
   private db: PostgresJsDatabase | NeonHttpDatabase;
 
   constructor() {

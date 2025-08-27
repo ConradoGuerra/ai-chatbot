@@ -1,19 +1,18 @@
 import type { Stock } from "./types";
 
-export interface IStockClient {
-  getQuote(ticker: string): Promise<Stock | null>;
+export interface IStockPortfolioClient {
   getQuotes(tickers: string[]): Promise<Stock[]>;
 }
 
-export interface IStockService {
+export interface IStockPortfolioService {
   getPortfolio(tickers: string[]): Promise<Stock[]>;
 }
 
-export interface IStockRepository {
+export interface IStockPortfolioRepository {
   saveMany(quotes: Stock[]): Promise<void>;
 }
 
-export interface IStockCacheRepository {
+export interface IStockPortfolioCacheRepository {
   get(tickers: string[]): Promise<Stock[] | null>;
   set(tickers: string[], stocks: Stock[]): Promise<void>;
   close(): Promise<void>;

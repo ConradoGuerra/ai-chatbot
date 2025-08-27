@@ -1,16 +1,16 @@
 import type {
-  IStockService,
-  IStockCacheRepository,
-  IStockRepository,
+  IStockPortfolioService as IStockPortfolioService,
+  IStockPortfolioCacheRepository,
+  IStockPortfolioRepository,
 } from "@/lib/domain/stock/interfaces";
 import type { Stock } from "@/lib/domain/stock/types";
-import type { StockHttpClient } from "@/lib/infrastructure/http/stock-http-client";
+import type { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http-client";
 
-export class StockPortfolioService implements IStockService {
+export class StockPortfolioService implements IStockPortfolioService {
   constructor(
-    private readonly stockClient: StockHttpClient,
-    private readonly stockRepository: IStockRepository,
-    private readonly cacheRepository: IStockCacheRepository,
+    private readonly stockClient: StockPortfolioHttpClient,
+    private readonly stockRepository: IStockPortfolioRepository,
+    private readonly cacheRepository: IStockPortfolioCacheRepository,
   ) {}
 
   async getPortfolio(tickers: string[]): Promise<Stock[]> {
@@ -37,6 +37,7 @@ export class StockPortfolioService implements IStockService {
     } catch (error) {
       console.error(
         `Failed to fetch portfolio for tickers [${tickers.join(", ")}]:`,
+        error,
       );
       return [];
     }
