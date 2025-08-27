@@ -95,9 +95,9 @@ POSTGRES_URL=YOUR_NEON_CONFIG
 
 1. If you have already an accout, visit [Vercel Neon](https://vercel.com/dashboard/stores) and click "Create Database"
 2. If you don't have an account, visit [Vercel Neon](https://vercel.com/marketplace/neon) and click "Install" to create a database for a project.
-3. After creating, you'll be taken to the Neon dashboard
-4. Choose the tab ".env.local" abd copy value and key from `POSTGRES_URL`
-5. Replace the `POSTGRES_URL` in your `.env.local` file with this connection string
+3. After setting up and creating, you'll be taken to the Neon dashboard
+4. Choose the tab ".env.local", search and copy value of `POSTGRES_URL`
+5. Replace the value of `POSTGRES_URL` in your `.env.local` file with this connection string
 
 ### Installation Steps
 
