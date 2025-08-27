@@ -3,7 +3,7 @@ import type {
   IStockPortfolioCacheRepository,
 } from "@/lib/domain/stock/interfaces";
 import type { Stock } from "@/lib/domain/stock/types";
-import type { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http-client";
+import type { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http.client";
 import { eventBus } from "../events/event-bus";
 
 export class StockPortfolioService implements IStockPortfolioService {
