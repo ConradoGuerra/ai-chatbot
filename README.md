@@ -34,9 +34,40 @@
 - [Auth.js](https://authjs.dev)
   - Simple and secure authentication
 
+## Chatbot Capabilities
+
+You can ask the chatbot for real-time stock prices and portfolio information using natural language. For example:
+
+**User:**
+
+> What is the price of Netflix and NVIDIA stocks?
+
+**Chatbot Output:**
+
+```json
+[
+  {
+    "ticker": "NFLX",
+    "name": "Netflix, Inc.",
+    "price": "$224.19",
+    "volume": 1049834,
+    "change": "-0.15%"
+  },
+  {
+    "ticker": "NVDA",
+    "name": "NVIDIA Corporation",
+    "price": "$182.35",
+    "volume": 127657525,
+    "change": "+0.32%"
+  }
+]
+```
+
+> This is not a REST API endpoint. You interact with the chatbot using natural language, and it will respond with up-to-date stock information.
+
 ## Model Providers
 
-This template ships with [xAI](https://x.ai) `grok-2-1212` as the default chat model. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
+This template ships with [Gemini](https://gemini.google.com) `gemini-2.5` as the default chat model. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
 
 ## Deploy Your Own
 
@@ -59,15 +90,17 @@ You will need to use the environment variables [defined in `.env.example`](.env.
 AUTH_SECRET=secret
 REDIS_URL=redis://127.0.0.1:6379
 GOOGLE_GENERATIVE_AI_API_KEY=YOUR_GOGGLE_GEMINI_API_KEY
-POSTGRES_URL=YOUR_NEON_CONFIG
 FMP_API_KEY=YOUR_FMP_API_KEY
+POSTGRES_URL=YOUR_NEON_CONFIG
 ```
 
 - The `GOOGLE_GENERATIVE_AI_API_KEY` can be created at https://ai.google.dev/gemini-api/docs/api-key (It's free!)
 - The `FMP_API_KEY` can be created at https://site.financialmodelingprep.com/ (It's also free!)
 
 ### Neon Database Setup
+
 https://vercel.com/marketplace/neon
+
 1. Visit [Vercel Neon Integration](https://vercel.com/dashboard/stores) and click "Create Database"
 2. After creating, you'll be taken to the Neon dashboard
 3. Choose the tab ".env.local" abd copy value and key from `POSTGRES_URL`
