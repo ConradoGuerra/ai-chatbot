@@ -1,7 +1,7 @@
-import { ChatPage } from "../pages/chat";
-import { test, expect } from "../fixtures";
+import { ChatPage } from '../pages/chat';
+import { test, expect } from '../fixtures';
 
-test.describe("Get a portfolio of stocks", () => {
+test.describe('Get a portfolio of stocks', () => {
   let chatPage: ChatPage;
 
   test.beforeEach(async ({ page }) => {
@@ -9,8 +9,8 @@ test.describe("Get a portfolio of stocks", () => {
     await chatPage.createNewChat();
   });
 
-  test("Call get_portfolio tool with valid tickers", async () => {
-    await chatPage.sendUserMessage("Get portfolio for AAPL,GOOGL");
+  test('Call get_portfolio tool with valid tickers', async () => {
+    await chatPage.sendUserMessage('Get portfolio for AAPL,GOOGL');
     await chatPage.isGenerationComplete();
 
     const assistantMessage = await chatPage.getRecentAssistantMessage();

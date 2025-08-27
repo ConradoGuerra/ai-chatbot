@@ -71,14 +71,14 @@ This template ships with [Gemini](https://gemini.google.com) `gemini-2.5` as the
 
 ## Running locally
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env.local` file is all that is necessary.
 
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
+> Note: You should not commit your `.env.local` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
 
 ### Prerequisites
 
 1. Docker installed on your machine
-2. Create a `.env` file with the following variables:
+2. Create a `.env.local` file with the following variables:
 
 ```env
 AUTH_SECRET=secret
@@ -97,7 +97,7 @@ POSTGRES_URL=YOUR_NEON_CONFIG
 2. If you don't have an account, visit [Vercel Neon](https://vercel.com/marketplace/neon) and click "Install" to create a database for a project.
 3. After creating, you'll be taken to the Neon dashboard
 4. Choose the tab ".env.local" abd copy value and key from `POSTGRES_URL`
-5. Replace the `POSTGRES_URL` in your `.env` file with this connection string
+5. Replace the `POSTGRES_URL` in your `.env.local` file with this connection string
 
 ### Installation Steps
 
@@ -107,11 +107,9 @@ POSTGRES_URL=YOUR_NEON_CONFIG
 docker compose up -d
 ```
 
-2. Install Vercel CLI: `npm i -g vercel`
-3. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-
 ```bash
 pnpm install
+npx drizzle-kit push
 pnpm dev
 ```
 

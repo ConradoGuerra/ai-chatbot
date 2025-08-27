@@ -57,6 +57,13 @@
       "when": 1756148014477,
       "tag": "0007_first_invaders",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1756328075353,
+      "tag": "0008_simple_thunderbird",
+      "breakpoints": true
     }
   ]
 }

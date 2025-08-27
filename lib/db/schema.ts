@@ -177,8 +177,9 @@ export const stockQuotesHistoric = pgTable('stock_quotes_historic', {
   ticker: text('ticker').notNull(),
   price: numeric('price').notNull(),
   volume: bigint('volume', { mode: 'number' }).notNull(),
-  changes_percentage: numeric('changes_percentage'),
-  quoted_at: timestamp('quoted_at').notNull().defaultNow(),
+  changesPercentage: numeric('changes_percentage'),
+  quotedAt: timestamp('quoted_at').notNull(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
 });
 
 export type StockQuoteHistoric = InferSelectModel<typeof stockQuotesHistoric>;

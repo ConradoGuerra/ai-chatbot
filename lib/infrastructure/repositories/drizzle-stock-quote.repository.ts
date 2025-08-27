@@ -18,7 +18,8 @@ export class DrizzleStockQuoteRepository implements IStockPortfolioRepository {
 
   constructor() {
     if (
-      databaseConfig.url === 'postgresql://user:secret@localhost:5432/ai-chatbot'
+      databaseConfig.url ===
+      'postgresql://user:secret@localhost:5432/ai-chatbot'
     ) {
       const sql = postgres(databaseConfig.url);
       this.db = drizzlePostgre(sql);
@@ -35,8 +36,8 @@ export class DrizzleStockQuoteRepository implements IStockPortfolioRepository {
       ticker: quote.symbol,
       price: quote.price.toString(),
       volume: quote.volume,
-      changes_percentage: quote.changesPercentage?.toString(),
-      quoted_at: new Date(quote.timestamp),
+      changesPercentage: quote.changesPercentage?.toString(),
+      quotedAt: new Date(quote.timestamp),
     }));
 
     await this.db.insert(stockQuotesHistoric).values(quoteEntities);
