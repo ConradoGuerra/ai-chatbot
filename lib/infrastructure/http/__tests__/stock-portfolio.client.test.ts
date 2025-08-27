@@ -1,7 +1,7 @@
 import { Stock } from "@/lib/domain/stock/types";
-import { StockPortfolioHttpClient } from "../stock-portfolio-http-client";
+import { StockPortfolioHttpClient } from "../stock-portfolio-http.client";
 
-describe("StockClient", () => {
+describe(" StockPortfolioHttpClient", () => {
   const mockAxios = {
     get: jest.fn(),
   };

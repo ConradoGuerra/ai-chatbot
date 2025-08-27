@@ -1,4 +1,4 @@
-import { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http-client";
+import { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http.client";
 import type {
   IStockPortfolioService,
   IStockPortfolioCacheRepository,
