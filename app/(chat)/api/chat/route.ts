@@ -40,7 +40,7 @@ import type { ChatModel } from "@/lib/ai/models";
 import type { VisibilityType } from "@/components/visibility-selector";
 import { StockPortfolioFactory } from "@/lib/infrastructure/factories/stock-portfolio.factory";
 import { RedisClient } from "@/lib/infrastructure/cache/redis.client";
-import { NeonStockQuoteRepository } from "@/lib/infrastructure/repositories/neon-stock-quote.repository";
+import { DrizzleStockQuoteRepository } from "@/lib/infrastructure/repositories/drizzle-stock-quote.repository";
 import { StockCacheRepository } from "@/lib/infrastructure/repositories/stock-cache.repository";
 import { createAxiosInstance } from "@/lib/axios/client";
 
@@ -159,7 +159,7 @@ export async function POST(request: Request) {
       execute: ({ writer: dataStream }) => {
         const redisClient = new RedisClient();
         const stockPortfolioFactory = new StockPortfolioFactory(
-          new NeonStockQuoteRepository(process.env.DATABASE_URL!),
+          new DrizzleStockQuoteRepository(),
           new StockCacheRepository(redisClient),
           createAxiosInstance({
             baseURL: "https://financialmodelingprep.com/api/v3",

@@ -1,3 +1,4 @@
+import { cacheConfig } from "@/config/cache";
 import {
   createClient,
   type RedisClientType,
@@ -7,9 +8,8 @@ import {
 export class RedisClient {
   private client: RedisClientType<RedisDefaultModules>;
 
-  constructor(url: string = process.env.REDIS_URL || "redis://127.0.0.1:6380") {
-    console.log(url)
-    this.client = createClient({ url });
+  constructor() {
+    this.client = createClient({ url: cacheConfig.url });
     this.client.connect();
   }
 

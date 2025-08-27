@@ -1,19 +1,18 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
 import { stockQuotesHistoric } from "@/lib/db/schema";
-import { NeonStockQuoteRepository } from "../../lib/infrastructure/repositories/neon-stock-quote.repository";
+import { DrizzleStockQuoteRepository } from "../../lib/infrastructure/repositories/drizzle-stock-quote.repository";
+import { databaseConfig } from "@/config/database";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 
-describe("NeonStockQuoteRepository Integration", () => {
-  let repository: NeonStockQuoteRepository;
+describe("DrizzleStockQuoteRepository Integration", () => {
+  let repository: DrizzleStockQuoteRepository;
   let db: ReturnType<typeof drizzle>;
 
   beforeAll(() => {
-    const TEST_DB_URL =
-      "postgresql://neondb_owner:npg_lmoURTHw9L3r@ep-young-shadow-ac8t6qms-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
-
-    const sql = neon(TEST_DB_URL);
+    databaseConfig.url = "postgresql://user:secret@localhost:5432/ai-chatbot";
+    const sql = postgres(databaseConfig.url);
     db = drizzle(sql);
-    repository = new NeonStockQuoteRepository(TEST_DB_URL);
+    repository = new DrizzleStockQuoteRepository();
   });
 
   beforeEach(async () => {
@@ -29,7 +28,7 @@ describe("NeonStockQuoteRepository Integration", () => {
           price: 150.0,
           volume: 1000000,
           changesPercentage: 1.5,
-          timestamp: new Date().toISOString(),
+          timestamp: 1756238402,
         },
         {
           symbol: "GOOGL",
@@ -37,7 +36,7 @@ describe("NeonStockQuoteRepository Integration", () => {
           price: 2800.0,
           volume: 500000,
           changesPercentage: 0.8,
-          timestamp: new Date().toISOString(),
+          timestamp: 1756238402,
         },
       ];
       await repository.saveMany(testQuotes);
