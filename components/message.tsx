@@ -201,7 +201,7 @@ const PurePreviewMessage = ({
 
                 if (state === "output-available") {
                   const { output } = part;
-                  return (
+                  if (output.length) return (
                     <div key={toolCallId}>
                       <StockPortfolio portfolio={output as Stock[]} />
                     </div>
