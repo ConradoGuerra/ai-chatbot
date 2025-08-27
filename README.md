@@ -10,8 +10,8 @@
 <p align="center">
   <a href="https://chat-sdk.dev"><strong>Read Docs</strong></a> ·
   <a href="#features"><strong>Features</strong></a> ·
+  <a href="#chatbot-capabilities"><strong>Chatbot Capabilities</strong></a> ·
   <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
   <a href="#running-locally"><strong>Running locally</strong></a>
 </p>
 <br/>
@@ -24,7 +24,7 @@
 - [AI SDK](https://sdk.vercel.ai/docs)
   - Unified API for generating text, structured objects, and tool calls with LLMs
   - Hooks for building dynamic chat and generative user interfaces
-  - Supports xAI (default), OpenAI, Fireworks, and other model providers
+  - Supports Gemini (default), OpenAI, Fireworks, and other model providers
 - [shadcn/ui](https://ui.shadcn.com)
   - Styling with [Tailwind CSS](https://tailwindcss.com)
   - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
@@ -47,18 +47,18 @@ You can ask the chatbot for real-time stock prices and portfolio information usi
 ```json
 [
   {
+    "empresa": "Netflix, Inc.",
     "ticker": "NFLX",
-    "name": "Netflix, Inc.",
-    "price": "$224.19",
+    "preço": "$224.19",
     "volume": 1049834,
-    "change": "-0.15%"
+    "variação": "-0.15%"
   },
   {
+    "empresa": "NVIDIA Corporation",
     "ticker": "NVDA",
-    "name": "NVIDIA Corporation",
-    "price": "$182.35",
+    "preço": "$182.35",
     "volume": 127657525,
-    "change": "+0.32%"
+    "variação": "+0.32%"
   }
 ]
 ```
@@ -68,12 +68,6 @@ You can ask the chatbot for real-time stock prices and portfolio information usi
 ## Model Providers
 
 This template ships with [Gemini](https://gemini.google.com) `gemini-2.5` as the default chat model. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
-
-## Deploy Your Own
-
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET&envDescription=Learn+more+about+how+to+get+the+API+Keys+for+the+application&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&demo-title=AI+Chatbot&demo-description=An+Open-Source+AI+Chatbot+Template+Built+With+Next.js+and+the+AI+SDK+by+Vercel.&demo-url=https%3A%2F%2Fchat.vercel.ai&products=%5B%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22ai%22%2C%22productSlug%22%3A%22grok%22%2C%22integrationSlug%22%3A%22xai%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22neon%22%2C%22integrationSlug%22%3A%22neon%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22upstash-kv%22%2C%22integrationSlug%22%3A%22upstash%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D)
 
 ## Running locally
 
@@ -99,12 +93,11 @@ POSTGRES_URL=YOUR_NEON_CONFIG
 
 ### Neon Database Setup
 
-https://vercel.com/marketplace/neon
-
-1. Visit [Vercel Neon Integration](https://vercel.com/dashboard/stores) and click "Create Database"
-2. After creating, you'll be taken to the Neon dashboard
-3. Choose the tab ".env.local" abd copy value and key from `POSTGRES_URL`
-4. Replace the `POSTGRES_URL` in your `.env` file with this connection string
+1. If you have already an accout, visit [Vercel Neon](https://vercel.com/dashboard/stores) and click "Create Database"
+2. If you don't have an account, visit [Vercel Neon](https://vercel.com/marketplace/neon) and click "Install" to create a database for a project.
+3. After creating, you'll be taken to the Neon dashboard
+4. Choose the tab ".env.local" abd copy value and key from `POSTGRES_URL`
+5. Replace the `POSTGRES_URL` in your `.env` file with this connection string
 
 ### Installation Steps
 
@@ -122,4 +115,4 @@ pnpm install
 pnpm dev
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000).
+Your app should now be running on [localhost:3000](http://localhost:3000).

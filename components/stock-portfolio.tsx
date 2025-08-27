@@ -37,9 +37,10 @@ export function StockPortfolio({ portfolio }: { portfolio?: Stock[] }) {
         </div>
 
         <div className="grid grid-cols-5 gap-4 text-center font-semibold mb-2">
+          <div>Empresa</div>
           <div>Ticker</div>
-          <div>Price</div>
-          <div>Change</div>
+          <div>Preço</div>
+          <div>Variação</div>
           <div>Volume</div>
         </div>
 
@@ -49,6 +50,7 @@ export function StockPortfolio({ portfolio }: { portfolio?: Stock[] }) {
               key={stock.symbol}
               className="grid grid-cols-5 gap-4 text-center py-2 border-b border-gray-100 last:border-0"
             >
+              <div className="font-medium">{stock.name}</div>
               <div className="font-medium">{stock.symbol}</div>
               <div>$ {stock.price.toFixed(2)}</div>
               <div
