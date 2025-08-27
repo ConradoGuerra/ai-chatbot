@@ -50,9 +50,39 @@ You will need to use the environment variables [defined in `.env.example`](.env.
 
 > Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
+### Prerequisites
+
+1. Docker installed on your machine
+2. Create a `.env` file with the following variables:
+
+```env
+AUTH_SECRET=secret
+REDIS_URL=redis://127.0.0.1:6379
+GOOGLE_GENERATIVE_AI_API_KEY=YOUR_GOGGLE_GEMINI_API_KEY
+POSTGRES_URL=YOUR_NEON_CONFIG
+FMP_API_KEY=YOUR_FMP_API_KEY
+```
+
+- The `GOOGLE_GENERATIVE_AI_API_KEY` can be created at https://ai.google.dev/gemini-api/docs/api-key (It's free!)
+- The `FMP_API_KEY` can be created at https://site.financialmodelingprep.com/ (It's also free!)
+
+### Neon Database Setup
+https://vercel.com/marketplace/neon
+1. Visit [Vercel Neon Integration](https://vercel.com/dashboard/stores) and click "Create Database"
+2. After creating, you'll be taken to the Neon dashboard
+3. Choose the tab ".env.local" abd copy value and key from `POSTGRES_URL`
+4. Replace the `POSTGRES_URL` in your `.env` file with this connection string
+
+### Installation Steps
+
+1. Start the required services using Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+2. Install Vercel CLI: `npm i -g vercel`
+3. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
 
 ```bash
 pnpm install
