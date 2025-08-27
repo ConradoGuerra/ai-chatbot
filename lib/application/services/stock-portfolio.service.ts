@@ -20,14 +20,15 @@ export class StockPortfolioService implements IStockPortfolioService {
     try {
       const cachedQuotes = await this.cacheRepository.get(tickers);
       if (cachedQuotes) {
+        this.emitEvent(cachedQuotes);
         return cachedQuotes;
       }
 
       const quotes = await this.fetchQuotesWithRetry(tickers);
 
       if (quotes.length > 0) {
+        this.emitEvent(quotes);
         await Promise.all([this.cacheRepository.set(tickers, quotes)]);
-        eventBus.emit("portfolioObserved", quotes); // moved to events folder
       }
 
       return quotes;
@@ -54,5 +55,9 @@ export class StockPortfolioService implements IStockPortfolioService {
 
     const retryQuotes = await this.stockClient.getQuotes(missingTickers);
     return [...initialQuotes, ...retryQuotes];
+  }
+
+  private emitEvent(quotes: Stock[]) {
+    eventBus.emit("portfolioObserved", quotes); 
   }
 }
