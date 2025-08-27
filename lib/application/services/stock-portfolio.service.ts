@@ -1,15 +1,14 @@
 import type {
   IStockPortfolioService as IStockPortfolioService,
   IStockPortfolioCacheRepository,
-  IStockPortfolioRepository,
 } from "@/lib/domain/stock/interfaces";
 import type { Stock } from "@/lib/domain/stock/types";
 import type { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http-client";
+import { eventBus } from "../events/event-bus";
 
 export class StockPortfolioService implements IStockPortfolioService {
   constructor(
     private readonly stockClient: StockPortfolioHttpClient,
-    private readonly stockRepository: IStockPortfolioRepository,
     private readonly cacheRepository: IStockPortfolioCacheRepository,
   ) {}
 
@@ -27,10 +26,8 @@ export class StockPortfolioService implements IStockPortfolioService {
       const quotes = await this.fetchQuotesWithRetry(tickers);
 
       if (quotes.length > 0) {
-        await Promise.all([
-          this.savePortfolio(quotes),
-          this.cacheRepository.set(tickers, quotes),
-        ]);
+        await Promise.all([this.cacheRepository.set(tickers, quotes)]);
+        eventBus.emit("portfolioObserved", quotes); // moved to events folder
       }
 
       return quotes;
@@ -57,14 +54,5 @@ export class StockPortfolioService implements IStockPortfolioService {
 
     const retryQuotes = await this.stockClient.getQuotes(missingTickers);
     return [...initialQuotes, ...retryQuotes];
-  }
-
-  private async savePortfolio(stocks: Stock[]): Promise<void> {
-    try {
-      await this.stockRepository.saveMany(stocks);
-    } catch (error) {
-      console.error(`Failed to save portfolio for ${stocks.length} stocks`);
-      throw error;
-    }
   }
 }

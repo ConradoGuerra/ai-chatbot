@@ -6,9 +6,6 @@ describe("StockPortfolioService", () => {
   const mockStockClient = {
     getQuotes: jest.fn(),
   };
-  const mockStockRepository = {
-    saveMany: jest.fn(),
-  };
   const mockCacheService: IStockPortfolioCacheRepository = {
     get: jest.fn(),
     set: jest.fn(),
@@ -20,7 +17,6 @@ describe("StockPortfolioService", () => {
   beforeEach(() => {
     stockService = new StockPortfolioService(
       mockStockClient as any,
-      mockStockRepository as any,
       mockCacheService,
     );
     jest.clearAllMocks();
@@ -71,7 +67,6 @@ describe("StockPortfolioService", () => {
         expect(result).toEqual([]);
         expect(mockCacheService.get).not.toHaveBeenCalled();
         expect(mockStockClient.getQuotes).not.toHaveBeenCalled();
-        expect(mockStockRepository.saveMany).not.toHaveBeenCalled();
       });
 
       it("should handle empty responses", async () => {
@@ -87,12 +82,11 @@ describe("StockPortfolioService", () => {
         expect(mockCacheService.set).not.toHaveBeenCalled();
       });
 
-      it("should not save to repository or cache when no quotes are returned", async () => {
+      it("should not save to cache when no quotes are returned", async () => {
         mockStockClient.getQuotes.mockResolvedValueOnce([]);
 
         await stockService.getPortfolio(["INVALID"]);
 
-        expect(mockStockRepository.saveMany).not.toHaveBeenCalled();
         expect(mockCacheService.set).not.toHaveBeenCalled();
       });
 
@@ -148,7 +142,6 @@ describe("StockPortfolioService", () => {
         expect(result).toEqual(mockStocks);
         expect(mockCacheService.get).toHaveBeenCalledWith(["AAPL", "GOOGL"]);
         expect(mockStockClient.getQuotes).not.toHaveBeenCalled();
-        expect(mockStockRepository.saveMany).not.toHaveBeenCalled();
       });
 
       it("should fetch and cache quotes when cache is empty", async () => {
@@ -164,7 +157,6 @@ describe("StockPortfolioService", () => {
           mockStocks,
         );
         expect(mockStockClient.getQuotes).toHaveBeenCalledTimes(1);
-        expect(mockStockRepository.saveMany).toHaveBeenCalledWith(mockStocks);
       });
 
       it("should handle cache service errors gracefully", async () => {
@@ -176,7 +168,6 @@ describe("StockPortfolioService", () => {
 
         expect(result).toEqual([]);
         expect(mockStockClient.getQuotes).not.toHaveBeenCalled();
-        expect(mockStockRepository.saveMany).not.toHaveBeenCalled();
         expect(console.error).toHaveBeenCalled();
       });
     });
@@ -194,22 +185,6 @@ describe("StockPortfolioService", () => {
         expect(result).toEqual([]);
         expect(mockStockClient.getQuotes).toHaveBeenCalled();
         expect(mockCacheService.set).not.toHaveBeenCalled();
-        expect(console.error).toHaveBeenCalled();
-      });
-
-      it("should handle database save errors and return empty array", async () => {
-        const dbError = new Error("Database error");
-        mockStockClient.getQuotes.mockResolvedValueOnce(mockStocks);
-        mockStockRepository.saveMany.mockRejectedValueOnce(dbError);
-
-        const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
-
-        expect(result).toEqual([]);
-        expect(mockStockRepository.saveMany).toHaveBeenCalledWith(mockStocks);
-        expect(mockCacheService.set).toHaveBeenCalledWith(
-          ["AAPL", "GOOGL"],
-          mockStocks,
-        );
         expect(console.error).toHaveBeenCalled();
       });
     });
