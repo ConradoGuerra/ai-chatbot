@@ -38,7 +38,11 @@ import { ChatSDKError } from "@/lib/errors";
 import type { ChatMessage } from "@/lib/types";
 import type { ChatModel } from "@/lib/ai/models";
 import type { VisibilityType } from "@/components/visibility-selector";
-import { stockPortfolioFactory } from "@/lib/infrastructure/factories/stock-portfolio.factory";
+import { StockPortfolioFactory } from "@/lib/infrastructure/factories/stock-portfolio.factory";
+import { RedisClient } from "@/lib/infrastructure/cache/redis.client";
+import { NeonStockQuoteRepository } from "@/lib/infrastructure/repositories/neon-stock-quote.repository";
+import { StockCacheRepository } from "@/lib/infrastructure/repositories/stock-cache.repository";
+import { createAxiosInstance } from "@/lib/axios/client";
 
 export const maxDuration = 60;
 
@@ -153,10 +157,17 @@ export async function POST(request: Request) {
 
     const stream = createUIMessageStream({
       execute: ({ writer: dataStream }) => {
-        const stockService = stockPortfolioFactory.createStockService({
-          baseURL: "https://financialmodelingprep.com/api/v3",
-          apiKey: process.env.FMP_API_KEY || "local_key",
-        });
+        const redisClient = new RedisClient();
+        const stockPortfolioFactory = new StockPortfolioFactory(
+          new NeonStockQuoteRepository(process.env.DATABASE_URL!),
+          new StockCacheRepository(redisClient),
+          createAxiosInstance({
+            baseURL: "https://financialmodelingprep.com/api/v3",
+          }),
+        );
+        const stockService = stockPortfolioFactory.createStockService(
+          process.env.FMP_API_KEY || "local_key",
+        );
 
         const result = streamText({
           model: myProvider.languageModel(selectedChatModel),

@@ -2,7 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { stockQuotesHistoric } from "@/lib/db/schema";
 import { Stock } from "@/lib/domain/stock/types";
-import { IStockRepository } from "@/lib/application/services/stock-service";
+import { IStockRepository } from "@/lib/domain/stock/interfaces";
 
 export class NeonStockQuoteRepository implements IStockRepository {
   private readonly db: ReturnType<typeof drizzle>;

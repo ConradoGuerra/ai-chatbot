@@ -9,7 +9,12 @@ export interface IStockService {
   getPortfolio(tickers: string[]): Promise<Stock[]>;
 }
 
-export interface StockClientConfig {
-  baseURL: string;
-  apiKey: string;
+export interface IStockRepository {
+  saveMany(quotes: Stock[]): Promise<void>;
+}
+
+export interface IStockCacheRepository {
+  get(tickers: string[]): Promise<Stock[] | null>;
+  set(tickers: string[], stocks: Stock[]): Promise<void>;
+  close(): Promise<void>;
 }

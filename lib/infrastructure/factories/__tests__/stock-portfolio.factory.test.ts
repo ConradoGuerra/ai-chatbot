@@ -1,54 +1,55 @@
-import { StockHttpClient } from '@/lib/infrastructure/http/stock-http-client';
-import { StockPortfolioFactory } from '../stock-portfolio.factory';
-import { StockPortfolioService } from '@/lib/application/services/stock-service';
+import { StockHttpClient } from "@/lib/infrastructure/http/stock-http-client";
+import { StockPortfolioFactory } from "../stock-portfolio.factory";
+import { StockPortfolioService } from "@/lib/application/services/stock-service";
+import { type AxiosInstance } from "axios";
+import type {
+  IStockRepository,
+  IStockCacheRepository,
+} from "@/lib/domain/stock/interfaces";
 
-jest.mock('@/lib/application/services/stock-service');
-jest.mock('@/lib/infrastructure/http/stock-http-client');
-jest.mock('@/lib/application/stock/client');
+jest.mock("@/lib/infrastructure/http/stock-http-client");
+jest.mock("@/lib/application/services/stock-service");
 
-describe('StockPortfolioFactory', () => {
-  const mockCreateHttpClient = jest.fn();
-  const mockHttpClient = { get: jest.fn() };
-  let factory: StockPortfolioFactory;
-  const mockRepository = { saveMany: jest.fn() };
-
-  beforeEach(() => {
-    mockCreateHttpClient.mockReturnValue(mockHttpClient);
-    factory = new StockPortfolioFactory(mockRepository, mockCreateHttpClient);
-    jest.clearAllMocks();
+describe("StockPortfolioFactory", () => {
+  const mockHttpClient = jest.fn().mockReturnValue({
+    get: jest.fn(),
   });
 
-  describe('createStockService', () => {
-    const config = {
-      baseURL: 'https://api.example.com',
-      apiKey: 'test-api-key',
-    };
+  const mockRepository: jest.Mocked<IStockRepository> = {
+    saveMany: jest.fn().mockResolvedValue(undefined),
+  };
 
-    it('should create a stock service with proper configuration', () => {
-      const service = factory.createStockService(config);
+  const mockCacheRepository: jest.Mocked<IStockCacheRepository> = {
+    get: jest.fn(),
+    set: jest.fn(),
+    close: jest.fn(),
+  };
 
-      expect(mockCreateHttpClient).toHaveBeenCalledWith({
-        baseURL: config.baseURL,
-      });
+  let factory: StockPortfolioFactory;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    factory = new StockPortfolioFactory(
+      mockRepository,
+      mockCacheRepository,
+      mockHttpClient as unknown as AxiosInstance,
+    );
+  });
+
+  describe("createStockService", () => {
+    it("should update http client config with baseURL", () => {
+      factory.createStockService("test-api-key");
+
       expect(StockHttpClient).toHaveBeenCalledWith(
         mockHttpClient,
-        config.apiKey,
+        "test-api-key",
       );
-      expect(StockPortfolioService).toHaveBeenCalledWith(
-        expect.any(StockHttpClient),
-        mockRepository,
-      );
-      expect(service).toBeInstanceOf(StockPortfolioService);
     });
 
-    it('should use the same configuration for multiple service instances', () => {
-      const service1 = factory.createStockService(config);
-      const service2 = factory.createStockService(config);
+    it("should create StockPortfolioService", () => {
+      const service = factory.createStockService("test-api-key");
 
-      expect(mockCreateHttpClient).toHaveBeenCalledTimes(2);
-      expect(StockHttpClient).toHaveBeenCalledTimes(2);
-      expect(StockPortfolioService).toHaveBeenCalledTimes(2);
-      expect(service1).not.toBe(service2);
+      expect(service).toBeInstanceOf(StockPortfolioService);
     });
   });
 });

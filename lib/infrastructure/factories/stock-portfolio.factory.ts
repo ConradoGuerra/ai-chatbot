@@ -1,27 +1,25 @@
 import { StockHttpClient } from "@/lib/infrastructure/http/stock-http-client";
-import type { IStockRepository } from "@/lib/application/services/stock-service";
 import { StockPortfolioService } from "@/lib/application/services/stock-service";
-import { stockRepository } from "@/lib/application/repositories";
 import type {
-  StockClientConfig,
   IStockService,
+  IStockCacheRepository,
+  IStockRepository,
 } from "@/lib/domain/stock/interfaces";
-import { createAxiosInstance } from "@/lib/axios/client";
+import { AxiosInstance } from "axios";
 
 export class StockPortfolioFactory {
   constructor(
-    private readonly stockRepository: IStockRepository,
-    private readonly createHttpClient = createAxiosInstance,
+    private stockRepository: IStockRepository,
+    private cacheRepository: IStockCacheRepository,
+    private httpClient: AxiosInstance,
   ) {}
 
-  createStockService(config: StockClientConfig): IStockService {
-    const httpClient = this.createHttpClient({
-      baseURL: config.baseURL,
-    });
-
-    const stockClient = new StockHttpClient(httpClient, config.apiKey);
-    return new StockPortfolioService(stockClient, this.stockRepository);
+  createStockService(apiKey: string): IStockService {
+    const stockClient = new StockHttpClient(this.httpClient, apiKey);
+    return new StockPortfolioService(
+      stockClient,
+      this.stockRepository,
+      this.cacheRepository,
+    );
   }
 }
-
-export const stockPortfolioFactory = new StockPortfolioFactory(stockRepository);
