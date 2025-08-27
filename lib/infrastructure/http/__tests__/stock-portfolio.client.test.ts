@@ -1,11 +1,11 @@
-import { Stock } from "@/lib/domain/stock/types";
-import { StockPortfolioHttpClient } from "../stock-portfolio-http.client";
+import type { Stock } from '@/lib/domain/stock/types';
+import { StockPortfolioHttpClient } from '../stock-portfolio-http.client';
 
-describe(" StockPortfolioHttpClient", () => {
+describe(' StockPortfolioHttpClient', () => {
   const mockAxios = {
     get: jest.fn(),
   };
-  const apiKey = "test-api-key";
+  const apiKey = 'test-api-key';
   let stockClient: StockPortfolioHttpClient;
 
   beforeEach(() => {
@@ -13,19 +13,19 @@ describe(" StockPortfolioHttpClient", () => {
     jest.clearAllMocks();
   });
 
-  describe("getQuotes", () => {
+  describe('getQuotes', () => {
     const mockStocks: Stock[] = [
       {
-        symbol: "AAPL",
-        name: "Apple Inc",
+        symbol: 'AAPL',
+        name: 'Apple Inc',
         price: 150.0,
         volume: 1000000,
         changesPercentage: 1.5,
         timestamp: 1234567890,
       },
       {
-        symbol: "GOOGL",
-        name: "Alphabet Inc",
+        symbol: 'GOOGL',
+        name: 'Alphabet Inc',
         price: 2800.0,
         volume: 500000,
         changesPercentage: 0.8,
@@ -33,10 +33,10 @@ describe(" StockPortfolioHttpClient", () => {
       },
     ];
 
-    it("should return multiple stock data when API call succeeds", async () => {
+    it('should return multiple stock data when API call succeeds', async () => {
       mockAxios.get.mockResolvedValueOnce({ data: mockStocks });
 
-      const result = await stockClient.getQuotes(["AAPL", "GOOGL"]);
+      const result = await stockClient.getQuotes(['AAPL', 'GOOGL']);
 
       expect(result).toEqual([
         {
@@ -53,10 +53,10 @@ describe(" StockPortfolioHttpClient", () => {
       );
     });
 
-    it("should return empty array when API returns empty array", async () => {
+    it('should return empty array when API returns empty array', async () => {
       mockAxios.get.mockResolvedValueOnce({ data: [] });
 
-      const result = await stockClient.getQuotes(["INVALID1", "INVALID2"]);
+      const result = await stockClient.getQuotes(['INVALID1', 'INVALID2']);
 
       expect(result).toEqual([]);
       expect(mockAxios.get).toHaveBeenCalledWith(
@@ -64,12 +64,12 @@ describe(" StockPortfolioHttpClient", () => {
       );
     });
 
-    it("should throw error when API call fails", async () => {
-      const error = new Error("API Error");
+    it('should throw error when API call fails', async () => {
+      const error = new Error('API Error');
       mockAxios.get.mockRejectedValueOnce(error);
 
-      await expect(stockClient.getQuotes(["AAPL", "GOOGL"])).rejects.toThrow(
-        "Failed to fetch quotes for AAPL,GOOGL: API Error",
+      await expect(stockClient.getQuotes(['AAPL', 'GOOGL'])).rejects.toThrow(
+        'Failed to fetch quotes for AAPL,GOOGL: API Error',
       );
       expect(mockAxios.get).toHaveBeenCalledWith(
         `/quote/AAPL,GOOGL?apikey=${apiKey}`,

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 
 class LoggingEventEmitter extends EventEmitter {
   emit(event: string | symbol, ...args: any[]): boolean {

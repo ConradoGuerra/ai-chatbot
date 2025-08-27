@@ -1,5 +1,5 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import type { Stock } from "@/lib/domain/stock/types";
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import type { Stock } from '@/lib/domain/stock/types';
 
 export function StockPortfolio({ portfolio }: { portfolio?: Stock[] }) {
   if (!portfolio) {
@@ -21,17 +21,17 @@ export function StockPortfolio({ portfolio }: { portfolio?: Stock[] }) {
       <CardContent>
         <div className="mb-4 p-4 bg-gray-50 rounded-lg">
           <p className="text-center text-lg">
-            Seu portfólio vale{" "}
+            Seu portfólio vale{' '}
             <strong>
-              ${" "}
-              {totalValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-            </strong>{" "}
-            no total, com variação média de{" "}
+              ${' '}
+              {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </strong>{' '}
+            no total, com variação média de{' '}
             <strong
-              className={averageChange >= 0 ? "text-green-500" : "text-red-500"}
+              className={averageChange >= 0 ? 'text-green-500' : 'text-red-500'}
             >
               {averageChange.toFixed(2)}%
-            </strong>{" "}
+            </strong>{' '}
             no dia.
           </p>
         </div>
@@ -54,14 +54,14 @@ export function StockPortfolio({ portfolio }: { portfolio?: Stock[] }) {
               <div
                 className={
                   stock.changesPercentage > 0
-                    ? "text-green-500"
-                    : "text-red-500"
+                    ? 'text-green-500'
+                    : 'text-red-500'
                 }
               >
-                {stock.changesPercentage > 0 ? "+" : ""}
+                {stock.changesPercentage > 0 ? '+' : ''}
                 {stock.changesPercentage.toFixed(2)}%
               </div>
-              <div>{stock.volume?.toLocaleString("pt-BR")}</div>
+              <div>{stock.volume?.toLocaleString('pt-BR')}</div>
             </div>
           );
         })}

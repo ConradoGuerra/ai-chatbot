@@ -1,10 +1,10 @@
-import { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http.client";
+import { StockPortfolioHttpClient } from '@/lib/infrastructure/http/stock-portfolio-http.client';
 import type {
   IStockPortfolioService,
   IStockPortfolioCacheRepository,
-} from "@/lib/domain/stock/interfaces";
-import { AxiosInstance } from "axios";
-import { StockPortfolioService } from "@/lib/application/services/stock-portfolio.service";
+} from '@/lib/domain/stock/interfaces';
+import type { AxiosInstance } from 'axios';
+import { StockPortfolioService } from '@/lib/application/services/stock-portfolio.service';
 
 export class StockPortfolioFactory {
   constructor(

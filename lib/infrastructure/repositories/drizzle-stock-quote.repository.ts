@@ -1,24 +1,24 @@
 import {
   drizzle as drizzleNeon,
-  NeonHttpDatabase,
-} from "drizzle-orm/neon-http";
+  type NeonHttpDatabase,
+} from 'drizzle-orm/neon-http';
 import {
   drizzle as drizzlePostgre,
-  PostgresJsDatabase,
-} from "drizzle-orm/postgres-js";
-import { stockQuotesHistoric } from "@/lib/db/schema";
-import { Stock } from "@/lib/domain/stock/types";
-import { IStockPortfolioRepository } from "@/lib/domain/stock/interfaces";
-import { databaseConfig } from "@/config/database";
-import { neon } from "@neondatabase/serverless";
-import postgres from "postgres";
+  type PostgresJsDatabase,
+} from 'drizzle-orm/postgres-js';
+import { stockQuotesHistoric } from '@/lib/db/schema';
+import type { Stock } from '@/lib/domain/stock/types';
+import type { IStockPortfolioRepository } from '@/lib/domain/stock/interfaces';
+import { databaseConfig } from '@/config/database';
+import { neon } from '@neondatabase/serverless';
+import postgres from 'postgres';
 
 export class DrizzleStockQuoteRepository implements IStockPortfolioRepository {
   private db: PostgresJsDatabase | NeonHttpDatabase;
 
   constructor() {
     if (
-      databaseConfig.url == "postgresql://user:secret@localhost:5432/ai-chatbot"
+      databaseConfig.url === 'postgresql://user:secret@localhost:5432/ai-chatbot'
     ) {
       const sql = postgres(databaseConfig.url);
       this.db = drizzlePostgre(sql);

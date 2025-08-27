@@ -1,9 +1,9 @@
-import { cacheConfig } from "@/config/cache";
+import { cacheConfig } from '@/config/cache';
 import {
   createClient,
   type RedisClientType,
   type RedisDefaultModules,
-} from "redis";
+} from 'redis';
 
 export class RedisClient {
   private client: RedisClientType<RedisDefaultModules>;

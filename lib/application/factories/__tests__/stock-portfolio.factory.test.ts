@@ -1,7 +1,7 @@
 import { StockPortfolioHttpClient } from '@/lib/infrastructure/http/stock-portfolio-http.client';
 import { StockPortfolioFactory } from '../stock-portfolio.factory';
 import { StockPortfolioService } from '@/lib/application/services/stock-portfolio.service';
-import { type AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
 import type { IStockPortfolioCacheRepository } from '@/lib/domain/stock/interfaces';
 
 jest.mock('@/lib/infrastructure/http/stock-portfolio-http.client');

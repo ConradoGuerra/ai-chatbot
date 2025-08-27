@@ -1,8 +1,8 @@
-import { IStockPortfolioCacheRepository } from "@/lib/domain/stock/interfaces";
-import { StockPortfolioService } from "../stock-portfolio.service";
-import { Stock } from "@/lib/domain/stock/types";
+import type { IStockPortfolioCacheRepository } from '@/lib/domain/stock/interfaces';
+import { StockPortfolioService } from '../stock-portfolio.service';
+import type { Stock } from '@/lib/domain/stock/types';
 
-describe("StockPortfolioService", () => {
+describe('StockPortfolioService', () => {
   const mockStockClient = {
     getQuotes: jest.fn(),
   };
@@ -20,22 +20,22 @@ describe("StockPortfolioService", () => {
       mockCacheService,
     );
     jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  describe("getPortfolio", () => {
+  describe('getPortfolio', () => {
     const mockStocks: Stock[] = [
       {
-        symbol: "AAPL",
-        name: "Apple Inc",
+        symbol: 'AAPL',
+        name: 'Apple Inc',
         price: 150.0,
         volume: 1000000,
         changesPercentage: 1.5,
         timestamp: 1234567890,
       },
       {
-        symbol: "GOOGL",
-        name: "Alphabet Inc",
+        symbol: 'GOOGL',
+        name: 'Alphabet Inc',
         price: 2800.0,
         volume: 500000,
         changesPercentage: 0.8,
@@ -43,25 +43,25 @@ describe("StockPortfolioService", () => {
       },
     ];
 
-    describe("when does not have errors", () => {
+    describe('when does not have errors', () => {
       beforeEach(() => {
         (mockCacheService.get as jest.Mock).mockResolvedValue(null);
       });
 
-      it("should return early when first fetch gets all quotes", async () => {
+      it('should return early when first fetch gets all quotes', async () => {
         mockStockClient.getQuotes.mockResolvedValueOnce(mockStocks);
 
-        const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+        const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
         expect(result).toEqual(mockStocks);
         expect(mockStockClient.getQuotes).toHaveBeenCalledTimes(1);
         expect(mockStockClient.getQuotes).toHaveBeenCalledWith([
-          "AAPL",
-          "GOOGL",
+          'AAPL',
+          'GOOGL',
         ]);
       });
 
-      it("should handle empty tickers array", async () => {
+      it('should handle empty tickers array', async () => {
         const result = await stockService.getPortfolio([]);
 
         expect(result).toEqual([]);
@@ -69,12 +69,12 @@ describe("StockPortfolioService", () => {
         expect(mockStockClient.getQuotes).not.toHaveBeenCalled();
       });
 
-      it("should handle empty responses", async () => {
+      it('should handle empty responses', async () => {
         mockStockClient.getQuotes.mockResolvedValue([]);
 
         const result = await stockService.getPortfolio([
-          "INVALID1",
-          "INVALID2",
+          'INVALID1',
+          'INVALID2',
         ]);
 
         expect(result).toEqual([]);
@@ -82,89 +82,89 @@ describe("StockPortfolioService", () => {
         expect(mockCacheService.set).not.toHaveBeenCalled();
       });
 
-      it("should not save to cache when no quotes are returned", async () => {
+      it('should not save to cache when no quotes are returned', async () => {
         mockStockClient.getQuotes.mockResolvedValueOnce([]);
 
-        await stockService.getPortfolio(["INVALID"]);
+        await stockService.getPortfolio(['INVALID']);
 
         expect(mockCacheService.set).not.toHaveBeenCalled();
       });
 
-      describe("when the client does not return all the results", () => {
-        it("should retry fetching missing stocks", async () => {
+      describe('when the client does not return all the results', () => {
+        it('should retry fetching missing stocks', async () => {
           const firstResponse = [mockStocks[0]];
           const secondResponse = [mockStocks[1]];
           mockStockClient.getQuotes
             .mockResolvedValueOnce(firstResponse)
             .mockResolvedValueOnce(secondResponse);
 
-          const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+          const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
           expect(result).toEqual([...firstResponse, ...secondResponse]);
           expect(mockStockClient.getQuotes).toHaveBeenCalledTimes(2);
           expect(mockStockClient.getQuotes).toHaveBeenNthCalledWith(1, [
-            "AAPL",
-            "GOOGL",
+            'AAPL',
+            'GOOGL',
           ]);
           expect(mockStockClient.getQuotes).toHaveBeenNthCalledWith(2, [
-            "GOOGL",
+            'GOOGL',
           ]);
           expect(mockCacheService.set).toHaveBeenCalledWith(
-            ["AAPL", "GOOGL"],
+            ['AAPL', 'GOOGL'],
             mockStocks,
           );
         });
 
-        it("should handle when retry also fails", async () => {
+        it('should handle when retry also fails', async () => {
           const firstResponse = [mockStocks[0]];
           mockStockClient.getQuotes
             .mockResolvedValueOnce(firstResponse)
             .mockResolvedValueOnce([]);
 
-          const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+          const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
           expect(result).toEqual([...firstResponse]);
           expect(mockStockClient.getQuotes).toHaveBeenCalledTimes(2);
           expect(mockCacheService.set).toHaveBeenCalledWith(
-            ["AAPL", "GOOGL"],
+            ['AAPL', 'GOOGL'],
             firstResponse,
           );
         });
       });
     });
 
-    describe("when using cache", () => {
-      it("should return cached quotes when available", async () => {
+    describe('when using cache', () => {
+      it('should return cached quotes when available', async () => {
         (mockCacheService.get as jest.Mock).mockResolvedValueOnce(mockStocks);
 
-        const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+        const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
         expect(result).toEqual(mockStocks);
-        expect(mockCacheService.get).toHaveBeenCalledWith(["AAPL", "GOOGL"]);
+        expect(mockCacheService.get).toHaveBeenCalledWith(['AAPL', 'GOOGL']);
         expect(mockStockClient.getQuotes).not.toHaveBeenCalled();
       });
 
-      it("should fetch and cache quotes when cache is empty", async () => {
+      it('should fetch and cache quotes when cache is empty', async () => {
         (mockCacheService.get as jest.Mock).mockResolvedValueOnce(null);
         mockStockClient.getQuotes.mockResolvedValueOnce(mockStocks);
 
-        const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+        const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
         expect(result).toEqual(mockStocks);
-        expect(mockCacheService.get).toHaveBeenCalledWith(["AAPL", "GOOGL"]);
+        expect(mockCacheService.get).toHaveBeenCalledWith(['AAPL', 'GOOGL']);
         expect(mockCacheService.set).toHaveBeenCalledWith(
-          ["AAPL", "GOOGL"],
+          ['AAPL', 'GOOGL'],
           mockStocks,
         );
         expect(mockStockClient.getQuotes).toHaveBeenCalledTimes(1);
       });
 
-      it("should handle cache service errors gracefully", async () => {
+      it('should handle cache service errors gracefully', async () => {
         (mockCacheService.get as jest.Mock).mockRejectedValueOnce(
-          new Error("Cache error"),
+          new Error('Cache error'),
         );
 
-        const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+        const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
         expect(result).toEqual([]);
         expect(mockStockClient.getQuotes).not.toHaveBeenCalled();
@@ -172,15 +172,15 @@ describe("StockPortfolioService", () => {
       });
     });
 
-    describe("when it has error", () => {
+    describe('when it has error', () => {
       beforeEach(() => {
         (mockCacheService.get as jest.Mock).mockResolvedValue(null);
       });
 
-      it("should handle API errors", async () => {
-        mockStockClient.getQuotes.mockRejectedValue(new Error("API Error"));
+      it('should handle API errors', async () => {
+        mockStockClient.getQuotes.mockRejectedValue(new Error('API Error'));
 
-        const result = await stockService.getPortfolio(["AAPL", "GOOGL"]);
+        const result = await stockService.getPortfolio(['AAPL', 'GOOGL']);
 
         expect(result).toEqual([]);
         expect(mockStockClient.getQuotes).toHaveBeenCalled();

@@ -1,6 +1,6 @@
-import type { AxiosInstance } from "axios";
-import type { Stock } from "@/lib/domain/stock/types";
-import { IStockPortfolioClient } from "@/lib/domain/stock/interfaces";
+import type { AxiosInstance } from 'axios';
+import type { Stock } from '@/lib/domain/stock/types';
+import type { IStockPortfolioClient } from '@/lib/domain/stock/interfaces';
 
 export class StockPortfolioHttpClient implements IStockPortfolioClient {
   constructor(
@@ -10,7 +10,7 @@ export class StockPortfolioHttpClient implements IStockPortfolioClient {
 
   async getQuotes(tickers: string[]): Promise<Stock[]> {
     try {
-      const tickersParam = tickers.join(",");
+      const tickersParam = tickers.join(',');
       const endpoint = `/quote/${tickersParam}?apikey=${this.apiKey}`;
       console.log(`[client] Requesting: ${endpoint}`);
       const { data } = await this.axiosInstance.get<Stock[]>(endpoint);
@@ -33,9 +33,9 @@ export class StockPortfolioHttpClient implements IStockPortfolioClient {
       return mapped;
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : "Unknown error occurred";
+        error instanceof Error ? error.message : 'Unknown error occurred';
       throw new Error(
-        `Failed to fetch quotes for ${tickers.join(",")}: ${message}`,
+        `Failed to fetch quotes for ${tickers.join(',')}: ${message}`,
       );
     }
   }

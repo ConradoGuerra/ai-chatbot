@@ -1,4 +1,4 @@
-import type { Stock } from "./types";
+import type { Stock } from './types';
 
 export interface IStockPortfolioClient {
   getQuotes(tickers: string[]): Promise<Stock[]>;

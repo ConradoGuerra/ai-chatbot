@@ -1,10 +1,10 @@
 import type {
-  IStockPortfolioService as IStockPortfolioService,
+  IStockPortfolioService,
   IStockPortfolioCacheRepository,
-} from "@/lib/domain/stock/interfaces";
-import type { Stock } from "@/lib/domain/stock/types";
-import type { StockPortfolioHttpClient } from "@/lib/infrastructure/http/stock-portfolio-http.client";
-import { eventBus } from "../events/event-bus";
+} from '@/lib/domain/stock/interfaces';
+import type { Stock } from '@/lib/domain/stock/types';
+import type { StockPortfolioHttpClient } from '@/lib/infrastructure/http/stock-portfolio-http.client';
+import { eventBus } from '../events/event-bus';
 
 export class StockPortfolioService implements IStockPortfolioService {
   constructor(
@@ -34,7 +34,7 @@ export class StockPortfolioService implements IStockPortfolioService {
       return quotes;
     } catch (error) {
       console.error(
-        `Failed to fetch portfolio for tickers [${tickers.join(", ")}]:`,
+        `Failed to fetch portfolio for tickers [${tickers.join(', ')}]:`,
         error,
       );
       return [];
@@ -58,6 +58,6 @@ export class StockPortfolioService implements IStockPortfolioService {
   }
 
   private emitEvent(quotes: Stock[]) {
-    eventBus.emit("portfolioObserved", quotes); 
+    eventBus.emit('portfolioObserved', quotes);
   }
 }

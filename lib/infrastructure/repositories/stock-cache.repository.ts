@@ -1,16 +1,16 @@
-import type { Stock } from "@/lib/domain/stock/types";
-import { RedisClient } from "../cache/redis.client";
-import { IStockPortfolioCacheRepository } from "@/lib/domain/stock/interfaces";
+import type { Stock } from '@/lib/domain/stock/types';
+import type { RedisClient } from '../cache/redis.client';
+import type { IStockPortfolioCacheRepository } from '@/lib/domain/stock/interfaces';
 
 export class StockPortfolioCacheRepository
   implements IStockPortfolioCacheRepository
 {
-  private readonly TTL_SECONDS = 300
+  private readonly TTL_SECONDS = 300;
 
   constructor(private readonly cache: RedisClient) {}
 
   private getCacheKey(tickers: string[]): string {
-    return `stock:portfolio:${tickers.sort().join(",")}`;
+    return `stock:portfolio:${tickers.sort().join(',')}`;
   }
 
   async get(tickers: string[]): Promise<Stock[] | null> {
